@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>我的歌单</title>
+</head>
+<body>
+<h1>首页</h1>
+<a href="/add">点击添加歌曲</a>
+<table>
+  <thead>
+  <th>编号</th>
+  <th>名称</th>
+  <th>歌手</th>
+  <th>302K?</th>
+  <th>操作</th>
+  </thead>
+  <tbody>
+  <script type="text/template" id="template">
+
+    {{each musicList as item index}}
+      <tr>
+        <td>{{item.id}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.singer}}</td>
+
+        <td>
+          <a href="/edit/{{item.id}}">编辑</a>
+          <a href="javascript:remove('/remove/{{item.id}}')">删除</a>
+        </td>
+      </tr>
+    {{/each}}
+    </script>
+  </tbody>
+</table>
+<script src="/www/vender/jquery/dist/jquery.js"></script>
+<script src="/www/vender/artTemplate/dist/template.js"></script>
+<script>
+$(function(){
+  loadMusic();
+})
+
+
+  function loadMusic(){
+    $.ajax({
+      'url':'/getJson',
+      'type':'GET',
+      'success':function(data){
+        var data = JSON.parse(data);
+        var html = template('template',data);
+
+        $('tbody').html(html);
+      }
+
+    })
+  }
+  function remove(url){
+    $.ajax({
+      'url':url,
+      'type':'GET',
+      'success':function(data){
+        var data = JSON.parse(data);
+          if(data.code){
+            loadMusic()
+          }else{
+            document.wrtie(data.msg);
+          }
+       }
+
+    })
+  }
+</script>
+</body>
+</html>
